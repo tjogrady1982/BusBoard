@@ -68,7 +68,7 @@ namespace BusBoard.ConsoleApp
                 Console.WriteLine(item.vehicleId + " " + item.expectedArrival + " " + item.naptanId + " " + item.stationName);
             }
 
-            //Console.ReadLine();
+            Console.ReadLine();
         }
 
         public void ProcessSMSCode(string input)
@@ -84,7 +84,7 @@ namespace BusBoard.ConsoleApp
             Console.WriteLine(lineGroup.naptanIdReference + " " + stop.smsCode + " " + stop.commonName);
             var busstopid = lineGroup.naptanIdReference;
             ConvertSMSCodeToString(busstopid);
-            Console.ReadLine();
+            //Console.ReadLine();
         }
         public void GetStopsFromPostcode(string input)
         {
@@ -124,9 +124,9 @@ namespace BusBoard.ConsoleApp
 
             foreach (var item in SortedList)
             {
-                Console.WriteLine(item.distance + " " + item.commonName + " " + item.naptanIdReference);
+                Console.WriteLine(item.distance + " " + item.commonName + " " + item.lineGroup[0].naptanIdReference);
 
-                ConvertSMSCodeToString(item.naptanIdReference);
+                ConvertSMSCodeToString(item.lineGroup[0].naptanIdReference);
 
 
             }

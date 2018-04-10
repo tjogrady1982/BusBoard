@@ -15,9 +15,14 @@ namespace BusBoard.ConsoleApp
 
     class StopDistance
     {
-        public string naptanIdReference { get; set; }
+        public List<DistanceLineGroup> lineGroup { get; set; }
         public string distance { get; set; }
         public string commonName { get; set; }
+    }
+
+    class DistanceLineGroup
+    {
+        public string naptanIdReference { get; set; }
     }
 }
 
