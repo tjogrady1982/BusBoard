@@ -1,22 +1,58 @@
 ﻿@model BusBoard.Web.ViewModels.BusInfo
 @{
-  ViewBag.Title = "Bus Information";
+    ViewBag.Title = "Bus Information";
 }
-
 <h2>BusInfo</h2>
+<div class="row" bgcolor ="grey">
+    <h3>Arrivals data:</h3>
 
-<div class="row">
-    <p>Arrivals data:</p>
-    @foreach(var arrival in Model.Arrivals)
+    @foreach (var arrival in Model.Arrivals)
     {
-        <hr/>
-        <div>
-            <span>@arrival.stationName</span>
-            <span>@arrival.lineId</span>
-            <span>@arrival.TimeRemaining</span>
-            <span>@arrival.destinationName</span>
-            
 
+        <div>
+            <span>Bus Stop:@arrival.stationName </span>
+            <span>Route Number:@arrival.lineId </span>
+
+            @if (arrival.TimeRemaining.Minutes == 0)
+            {
+                <span>Bus is due! </span>
+            }
+            @if (arrival.TimeRemaining.Minutes != 0)
+            {
+                <span>Time Remaining: @arrival.TimeRemaining.Minutes  Minutes</span>
+            }
+
+            <span>Destination: @arrival.destinationName</span>
         </div>
     }
+
+
 </div>
+@foreach (var item in Model.Arrivals)
+{
+    <div class="column">
+        <h3>Bus Stop</h3>
+        <p>@item.stationName</p>
+    </div>
+    <div class="column">
+        <h3>Route Number</h3>
+        <p>@item.lineId</p>
+    </div>
+    <div class="column">
+        <h3>Time Remaining</h3>
+        @if (item.TimeRemaining.Minutes == 0)
+        {
+            <p>Due</p>
+        }
+        @if (item.TimeRemaining.Minutes != 0)
+        {
+            <p>@item.TimeRemaining.Minutes  Minutes</p>
+        }
+    </div>
+    <div class="column">
+        <h3>Destination</h3>
+        <p>@item.destinationName</p>
+    </div>
+
+}
+
