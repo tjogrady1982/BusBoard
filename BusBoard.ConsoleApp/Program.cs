@@ -77,14 +77,14 @@ namespace BusBoard.ConsoleApp
             var stoprequest = new RestRequest("", Method.GET);
             stoprequest.AddParameter("app_id", "4b439dd2");
             stoprequest.AddParameter("app_key", "42d5b73ee92771eb99ea20c4b43edf24");
-            var stopresponse = stopclient.Execute<List<StopsResponse>>(stoprequest);
+            var stopresponse = stopclient.Execute<StopsResponse>(stoprequest);
+            var stop = stopresponse.Data;
+            var lineGroup = stop.lineGroup[0];
 
-            foreach (var item in stopresponse.Data.lineGroup)
-            {
-                Console.WriteLine(item.naptanIdReference + " " + item.smsCode + " " + item.commonName);
-                var busstopid = item.naptanIdReference;
-                ConvertSMSCodeToString(busstopid);
-            }
+            Console.WriteLine(lineGroup.naptanIdReference + " " + stop.smsCode + " " + stop.commonName);
+            var busstopid = lineGroup.naptanIdReference;
+            ConvertSMSCodeToString(busstopid);
+            Console.ReadLine();
         }
         public void GetStopsFromPostcode(string input)
         {

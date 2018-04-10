@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BusBoard.ConsoleApp
 {
     class StopsResponse
     {
-        public Stops lineGroup { get; set; }
-    }
-    class Stops
-    {
-        public string naptanIdReference { get; set; }
         public string smsCode { get; set; }
         public string commonName { get; set; }
+        public List<LineGroup> lineGroup { get; set; }
+    }
+
+    class LineGroup
+    {
+        public string naptanIdReference { get; set; }
     }
 }
