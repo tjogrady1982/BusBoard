@@ -1,4 +1,6 @@
-﻿namespace BusBoard.Api
+﻿using System;
+
+namespace BusBoard.Api
 {
     public class Arrivals
     {
@@ -18,8 +20,9 @@
         public string timeToStation { get; set; }
         public string currentLocation { get; set; }
         public string towards { get; set; }
-        public string expectedArrival { get; set; }
+        public DateTime expectedArrival { get; set; }
         public string timeToLive { get; set; }
         public string modeName { get; set; }
+        public TimeSpan TimeRemaining { get; set; }
     }
 }

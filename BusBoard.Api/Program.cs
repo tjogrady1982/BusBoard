@@ -50,7 +50,12 @@ namespace BusBoard.Api
             foreach (var item in response.Data)
             {
                 buslist.Add(item);
+                
             }
+
+            buslist.ForEach(e => e.expectedArrival = e.expectedArrival.ToLocalTime());
+            buslist.ForEach(e => e.TimeRemaining = e.expectedArrival.Subtract(DateTime.Now));
+
 
             return buslist.OrderBy(o => o.expectedArrival).Take(5).ToList();
 
