@@ -7,43 +7,34 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace BusBoard.ConsoleApp
+namespace BusBoard.Api
 {
     public class Program
     {
-        static void Main(string[] args)
-        {
-            new Program().Run();
-        }
+       
 
-        private void Run()
+        public List<Arrivals> GetBusInfo(string input)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            Console.WriteLine("Bus Board 2018");
-            Console.WriteLine("Please Insert a 5 Digit SMS Stop Code OR your Postcode:");
-
-            string input = Console.ReadLine();
-
-
+            // TODO return error object/message?
             if (input.Length < 5)
             {
-                Console.Write("Please enter a 5 digit number! OR a 6 character postcode");
+                //    Console.Write("Please enter a 5 digit number! OR a 6 character postcode");
+                return new List<Arrivals>();
             }
 
             else if (input.Length == 5)
             {
-                ProcessSMSCode(input);
-
+               return ProcessSMSCode(input);
             }
 
-            else if (input.Length > 5)
+            else
             {
-                GetStopsFromPostcode(input);
+                return GetStopsFromPostcode(input);
             }
-
         }
-        void ConvertSMSCodeToString(string busstopid)
+        List<Arrivals> ConvertSMSCodeToString(string busstopid)
         {
 
             var client = new RestClient("https://api.tfl.gov.uk/StopPoint/" + busstopid + "/Arrivals");
@@ -61,17 +52,11 @@ namespace BusBoard.ConsoleApp
                 buslist.Add(item);
             }
 
-            List<Arrivals> SortedList = buslist.OrderBy(o => o.expectedArrival).Take(5).ToList();
+            return buslist.OrderBy(o => o.expectedArrival).Take(5).ToList();
 
-            foreach (var item in SortedList)
-            {
-                Console.WriteLine(item.vehicleId + " " + item.expectedArrival + " " + item.naptanId + " " + item.stationName);
-            }
-
-            Console.ReadLine();
         }
 
-        public void ProcessSMSCode(string input)
+        public List<Arrivals> ProcessSMSCode(string input)
         {
             var stopclient = new RestClient("https://api.tfl.gov.uk/StopPoint/Sms/" + input);
             var stoprequest = new RestRequest("", Method.GET);
@@ -83,29 +68,20 @@ namespace BusBoard.ConsoleApp
 
             Console.WriteLine(lineGroup.naptanIdReference + " " + stop.smsCode + " " + stop.commonName);
             var busstopid = lineGroup.naptanIdReference;
-            ConvertSMSCodeToString(busstopid);
-            //Console.ReadLine();
+            return ConvertSMSCodeToString(busstopid);
         }
-        public void GetStopsFromPostcode(string input)
+        public List<Arrivals> GetStopsFromPostcode(string input)
         {
             var postclient = new RestClient("https://api.postcodes.io/postcodes/" + input);
             var postrequest = new RestRequest("", Method.GET);
             var postresponse = postclient.Execute<PostCodeAPIResponse>(postrequest);
-            var postlist = new List<PostcodePosition>();
 
-            postlist.Add(postresponse.Data.Result);
-
-            foreach (var item in postlist)
-            {
-                Console.WriteLine(item.Postcode + " " + item.Latitude + " " + item.Longitude);
-                var lat = item.Latitude;
-                var lon = item.Longitude;
-                Console.WriteLine();
-                GetStopsFromLatAndLon(lat, lon);
-            }
+            var lat = postresponse.Data.Result.Latitude;
+            var lon = postresponse.Data.Result.Longitude;
+            return GetStopsFromLatAndLon(lat, lon);
         }
 
-        public void GetStopsFromLatAndLon(string lat, string lon)
+        public List<Arrivals> GetStopsFromLatAndLon(string lat, string lon)
         {
             var distanceclient = new RestClient("https://api.tfl.gov.uk/StopPoint?stopTypes=NaptanOnstreetBusCoachStopPair&radius=500&lat=" + lat + "&lon=" + lon);
             var distancerequest = new RestRequest("", Method.GET);
@@ -120,17 +96,13 @@ namespace BusBoard.ConsoleApp
                 distancelist.Add(item);
             }
 
-            List<StopDistance> SortedList = distancelist.OrderBy(o => o.distance).Take(2).ToList();
-
+            var stopsOutput = new List<Arrivals>();
+            var SortedList = distancelist.OrderBy(o => o.distance).Take(2).ToList();
             foreach (var item in SortedList)
             {
-                Console.WriteLine(item.distance + " " + item.commonName + " " + item.lineGroup[0].naptanIdReference);
-
-                ConvertSMSCodeToString(item.lineGroup[0].naptanIdReference);
-
-
+                stopsOutput = stopsOutput.Concat(ConvertSMSCodeToString(item.lineGroup[0].naptanIdReference)).ToList();
             }
-            Console.ReadLine();
+            return stopsOutput;
         }
     }
 }

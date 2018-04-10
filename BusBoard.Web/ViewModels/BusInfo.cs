@@ -1,13 +1,16 @@
-﻿namespace BusBoard.Web.ViewModels
+﻿using BusBoard.Api;
+using System.Collections.Generic;
+
+namespace BusBoard.Web.ViewModels
 {
   public class BusInfo
   {
-    public BusInfo(string postCode)
+    public BusInfo(List<Arrivals> arrivals)
     {
-      PostCode = postCode;
+      Arrivals = arrivals;
     }
 
-    public string PostCode { get; set; }
+    public List<Arrivals> Arrivals { get; set; }
 
   }
 }
