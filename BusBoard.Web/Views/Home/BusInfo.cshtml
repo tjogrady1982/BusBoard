@@ -3,8 +3,51 @@
     ViewBag.Title = "Bus Information";
 }
 <h2>BusInfo</h2>
-<div class="row" bgcolor ="grey">
+<div class="row">
     <h3>Arrivals data:</h3>
+
+    <style>
+        [class*="col-"] {
+            background-color: aquamarine;
+            border: 1px solid blue;
+            text-align:left;
+            text-emphasis-color:blue;
+            text-shadow:inherit;
+                
+        }
+    </style>
+    @foreach (var arrival1 in Model.Arrivals)
+    {
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    Bus Stop: @arrival1.stationName
+                </div>
+                <div class="clearfix visible-md"></div>
+                <div class="col-md-3">
+                    Route Number: @arrival1.lineId
+                </div>
+                <div class="clearfix visible-md"></div>
+                <div class="col-md-3">
+                    @if (arrival1.TimeRemaining.Minutes == 0)
+                    {
+                        <span> Bus is due! </span>
+                    }
+                    @if (arrival1.TimeRemaining.Minutes != 0)
+                    {
+                        <span>Time Remaining: @arrival1.TimeRemaining.Minutes  Minutes</span>
+                    }
+                </div>
+                <div class="clearfix visible-md"></div>
+                <div class="col-md-3">
+                    Destination: @arrival1.destinationName
+                </div>
+                <div class="clearfix visible-md"></div>
+            </div>
+        </div>
+
+    }
 
     @foreach (var arrival in Model.Arrivals)
     {
